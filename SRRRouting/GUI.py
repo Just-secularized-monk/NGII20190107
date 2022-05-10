@@ -1,0 +1,110 @@
+from PyQt5 import QtCore, QtGui, QtWidgets
+
+class Ui_widget(object):
+
+    def get_data(self):
+        path = 'request_all.txt'
+        info = []
+        with open(path, 'r', encoding='utf-8') as file:
+            txt_infos = file.readlines()
+            for i in txt_infos:
+                info.append(i.replace('\n', ''))
+            self.all_len = len(info)
+        self.sm = QtGui.QStandardItemModel()
+        self.sm.setHorizontalHeaderItem(0, QtGui.QStandardItem("IP"))
+        self.sm.setHorizontalHeaderItem(1, QtGui.QStandardItem("服务种类"))
+        self.sm.setHorizontalHeaderItem(2, QtGui.QStandardItem("可靠等级"))
+        for i in range(0, len(info)):
+            for j in range(0, 3):
+               self.sm.setItem(i, j, QtGui.QStandardItem(info[i].split(" ")[j]))
+        self.sm.sort(1, QtCore.Qt.DescendingOrder)
+        self.tableView.setModel(self.sm)
+
+    def setupUi(self, widget):
+        widget.setObjectName("widget")
+        widget.resize(1050, 518)
+        self.label = QtWidgets.QLabel(widget)
+        self.label.setGeometry(QtCore.QRect(80, 60, 81, 41))
+        font = QtGui.QFont()
+        font.setPointSize(16)
+        font.setBold(True)
+        font.setWeight(75)
+        self.label.setFont(font)
+        self.label.setObjectName("label")
+        self.plainTextEdit = QtWidgets.QPlainTextEdit(widget)
+        self.plainTextEdit.setGeometry(QtCore.QRect(210, 70, 271, 31))
+        self.plainTextEdit.setObjectName("plainTextEdit")
+        self.label_2 = QtWidgets.QLabel(widget)
+        self.label_2.setGeometry(QtCore.QRect(50, 170, 121, 41))
+        font = QtGui.QFont()
+        font.setPointSize(16)
+        font.setBold(True)
+        font.setWeight(75)
+        self.label_2.setFont(font)
+        self.label_2.setObjectName("label_2")
+        self.label_3 = QtWidgets.QLabel(widget)
+        self.label_3.setGeometry(QtCore.QRect(50, 300, 121, 41))
+        font = QtGui.QFont()
+        font.setPointSize(16)
+        font.setBold(True)
+        font.setWeight(75)
+        self.label_3.setFont(font)
+        self.label_3.setObjectName("label_3")
+        self.comboBox = QtWidgets.QComboBox(widget)
+        self.comboBox.setGeometry(QtCore.QRect(210, 180, 271, 31))
+        self.comboBox.setObjectName("comboBox")
+        self.comboBox.addItem("")
+        self.comboBox.addItem("")
+        self.comboBox_2 = QtWidgets.QComboBox(widget)
+        self.comboBox_2.setGeometry(QtCore.QRect(210, 300, 271, 31))
+        self.comboBox_2.setObjectName("comboBox_2")
+        self.comboBox_2.addItem("")
+        self.comboBox_2.addItem("")
+        self.pushButton = QtWidgets.QPushButton(widget)
+        self.pushButton.setGeometry(QtCore.QRect(370, 400, 111, 41))
+        self.pushButton.clicked.connect(self.push)
+        font = QtGui.QFont()
+        font.setPointSize(13)
+        font.setBold(True)
+        font.setWeight(75)
+        self.pushButton.setFont(font)
+        self.pushButton.setObjectName("pushButton")
+        self.tableView = QtWidgets.QTableView(widget)
+        self.tableView.setGeometry(QtCore.QRect(540, 40, 481, 451))
+        self.tableView.setObjectName("tableView")
+        self.get_data()
+        self.retranslateUi(widget)
+        QtCore.QMetaObject.connectSlotsByName(widget)
+
+    def push(self):
+        ip = self.plainTextEdit.toPlainText()
+        service = self.comboBox.currentIndex()
+        reliability = self.comboBox_2.currentIndex()
+        print(ip)
+        print(service)
+        print(reliability)
+        fo = open("request_all.txt", 'a')
+        fo.write(ip + " " + str(service) + " " + str(reliability) + "\n")
+        fo.close()
+        self.get_data()
+
+    def retranslateUi(self, widget):
+        _translate = QtCore.QCoreApplication.translate
+        widget.setWindowTitle(_translate("widget", "服务定制可靠路由 V1.0"))
+        self.label.setText(_translate("widget", "IP"))
+        self.label_2.setText(_translate("widget", "服务种类"))
+        self.label_3.setText(_translate("widget", "可靠等级"))
+        self.comboBox.setItemText(0, _translate("widget", "娱乐视频直播"))
+        self.comboBox.setItemText(1, _translate("widget", "远程手术直播"))
+        self.comboBox_2.setItemText(0, _translate("widget", "0 (传统故障保护)"))
+        self.comboBox_2.setItemText(1, _translate("widget", "1 (二维路由保护)"))
+        self.pushButton.setText(_translate("widget", "提交"))
+
+if __name__ == "__main__":
+    import sys
+    app = QtWidgets.QApplication(sys.argv)
+    widget = QtWidgets.QWidget()
+    ui = Ui_widget()
+    ui.setupUi(widget)
+    widget.show()
+    sys.exit(app.exec_())
